@@ -26,19 +26,11 @@ public class SecurityConfig
         http
                 .authorizeHttpRequests(authorizeRequests -> // HTTP 요청에 대한 보안 규칙을 정의
                         authorizeRequests
-                                .requestMatchers("/users/login","/users/register").permitAll() // /user/** 경로에 대한 접근을 허용
+                                .requestMatchers("/users/login","/users/register","/main").permitAll() // /user/** 경로에 대한 접근을 허용
+                                // 유저 관리 페이지는 "USER" 역할을 가진 사람만 접근 가능
                                 .anyRequest().authenticated() // 그 외의 모든 요청은 인증을 요구
                 )
-                .csrf(AbstractHttpConfigurer::disable) // CSRF 보호를 비활성화
-                .formLogin(form -> form // 폼 기반 로그인 설정
-                        .loginPage("/users/login") // 로그인 페이지 경로
-                        .defaultSuccessUrl("/hello1", true)  // 로그인 성공 후 리디렉션될 경로
-                        .failureUrl("/users/login?error=true")
-                        .permitAll()
-                )
-                .logout(logout -> logout // 로그아웃 설정
-                        .permitAll()
-                );
+                .csrf(AbstractHttpConfigurer::disable); // CSRF 보호를 비활성화
 
         return http.build(); // HTTP 보안 설정을 빌드하여 반환
     }

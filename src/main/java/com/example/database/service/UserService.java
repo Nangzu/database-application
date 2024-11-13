@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -21,35 +21,39 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        System.out.println("로그인 시도: " + email);
-        if(email == null || email.isEmpty()) {
-            System.out.println(("email 비엇거나 null인데용ㅇ?????"));
-        }
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
-        System.out.println("사용자 정보: " + user.getEmail());
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPassword())
-                .authorities("ROLE_USER") // 기본 권한 추가
-                .build();
+    // 직접 이메일과 비밀번호를 확인하는 로그인 메서드
+    public boolean authenticateUser(String email, String password) {
+        if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
+            System.out.println("이메일 또는 비밀번호가 비어 있습니다.");
+            return false;
+        }
+
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            System.out.println("사용자를 찾을 수 없습니다: " + email);
+            return false;
+        }
+
+        boolean isPasswordMatch = passwordEncoder.matches(password, user.getPassword());
+        if (!isPasswordMatch) {
+            System.out.println("비밀번호가 일치하지 않습니다.");
+            return false;
+        }
+
+        System.out.println("로그인 성공: " + user.getEmail());
+        return true;
     }
 
+    // 사용자 등록 메서드
     public User registerUser(User user) {
         System.out.println("회원가입 시도: " + user.getEmail() + ", " + user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword())); // 비밀번호 암호화
-
-        // 저장 전 로그 추가
-        System.out.println("저장 전 비밀번호: " + user.getPassword());
         User savedUser = userRepository.save(user);
-
-        // 저장 후 로그 추가
         System.out.println("회원가입 완료: " + savedUser.getEmail());
         return savedUser;
     }
+
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
