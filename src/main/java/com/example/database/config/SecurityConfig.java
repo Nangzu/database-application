@@ -28,6 +28,7 @@ public class SecurityConfig
                         authorizeRequests
                                 .requestMatchers("/users/login","/users/register","/main").permitAll() // /user/** 경로에 대한 접근을 허용
                                 // 유저 관리 페이지는 "USER" 역할을 가진 사람만 접근 가능
+                                .requestMatchers("/main").authenticated()
                                 .anyRequest().authenticated() // 그 외의 모든 요청은 인증을 요구
                 )
                 .csrf(AbstractHttpConfigurer::disable); // CSRF 보호를 비활성화
