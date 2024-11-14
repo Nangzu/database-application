@@ -1,10 +1,6 @@
 package com.example.database.dto;
 
-import com.example.database.entity.Product;
 import lombok.Data;
-
-import java.util.Collections;
-import java.util.List;
 
 @Data
 public class NaverProductDto {
