@@ -2,12 +2,16 @@ package com.example.database.service;
 
 import com.example.database.entity.User;
 import com.example.database.repository.UserRepository;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,10 +19,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MyUserDetailsService myUserDetailsService;  // MyUserDetailsService 추가
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, MyUserDetailsService myUserDetailsService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.myUserDetailsService = myUserDetailsService;  // 주입
     }
 
 
@@ -28,6 +35,7 @@ public class UserService {
             System.out.println("이메일 또는 비밀번호가 비어 있습니다.");
             return false;
         }
+
 
         User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
@@ -41,6 +49,15 @@ public class UserService {
             return false;
         }
 
+        // 로그인 성공, UserDetails를 사용해 인증 객체 생성
+        UserDetails userDetails = myUserDetailsService.loadUserByUsername(email);
+
+        // 인증 객체를 생성하고 SecurityContext에 설정
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        System.out.println("User authorities: " + userDetails.getAuthorities());
         System.out.println("로그인 성공: " + user.getEmail());
         return true;
     }
