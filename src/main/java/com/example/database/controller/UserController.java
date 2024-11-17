@@ -123,4 +123,16 @@ public class UserController {
 
         return "redirect:/users/mypage";  // 마이페이지로 리다이렉트
     }
+    // 회원 탈퇴 처리
+    @PostMapping("/delete-account")
+    public String deleteAccount(HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+
+        if (loggedInUser != null) {
+            userService.deleteUser(loggedInUser.getId());  // 사용자 삭제
+            session.invalidate();  // 세션 무효화 (로그아웃 처리)
+        }
+
+        return "redirect:/users/login";  // 로그인 페이지로 리다이렉트
+    }
 }

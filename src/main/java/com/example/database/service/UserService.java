@@ -32,6 +32,10 @@ public class UserService {
     public User updateUser(User user) {
         return userRepository.save(user);  // 비밀번호 변경 후 사용자 정보 저장
     }
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);  // 사용자 ID로 사용자 삭제
+    }
+
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
