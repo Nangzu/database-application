@@ -1,27 +1,23 @@
 package com.example.database.service;
 
-
-import com.example.database.dto.NaverProductDto;
-import com.example.database.dto.NaverRequestVariableDto;
-import com.example.database.entity.NaverProduct;
-import com.example.database.repository.NaverProductRepository;
-
-import lombok.extern.slf4j.Slf4j;
+import com.example.database.entity.Product;
+import com.example.database.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class NaverProductService {
-	
-	private final NaverProductRepository naverProductRepository;
 
     @Value("${naver.client-id}")
     private String clientId;
@@ -29,93 +25,73 @@ public class NaverProductService {
     @Value("${naver.client-secret}")
     private String clientSecret;
 
-    private static final String NAVER_API_URL = "https://openapi.naver.com/v1/search/shop.json";
-    
-    public NaverProductService(NaverProductRepository naverProductRepository) {
-        this.naverProductRepository = naverProductRepository;
+    private final ProductRepository productRepository;
+    private final ObjectMapper objectMapper;
+
+    @Autowired
+    public NaverProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+        this.objectMapper = new ObjectMapper();
     }
+    public String fetchProductDataFromNaver(String query) {
+        String apiURL = "https://openapi.naver.com/v1/search/shop.json?query=" + query;
 
-    public List<NaverProductDto> naverShopSearchAPI(NaverRequestVariableDto requestDto) {
-        // RestTemplate을 사용하여 API 호출
-        RestTemplate restTemplate = new RestTemplate();
+        try {
+            // URL 객체 생성
+            URL url = new URL(apiURL);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET"); // GET 메서드 설정
+            con.setRequestProperty("X-Naver-Client-Id", clientId); // 클라이언트 ID
+            con.setRequestProperty("X-Naver-Client-Secret", clientSecret); // 클라이언트 Secret
 
-        // 요청 URL 생성
-        String url = UriComponentsBuilder.fromHttpUrl(NAVER_API_URL)
-                .queryParam("query", requestDto.getQuery())
-                .queryParam("display", requestDto.getDisplay())
-                .queryParam("start", requestDto.getStart())
-                .queryParam("sort", requestDto.getSort())
-                .toUriString();
+            int responseCode = con.getResponseCode(); // 응답 코드 확인
+            if (responseCode == 200) { // 성공
+                BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String inputLine;
+                while ((inputLine = br.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                br.close();
+                saveProducts(response.toString());
+                return response.toString();
+            } else { // 실패
+                return "Error: API Response Code " + responseCode;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error: Unable to fetch data from Naver API";
+        }
 
-        // HTTP 헤더 추가
-        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-        headers.set("X-Naver-Client-Id", clientId);
-        headers.set("X-Naver-Client-Secret", clientSecret);
+    }
+    // 네이버 API 응답 JSON을 파싱하여 데이터베이스에 저장하는 메서드
+    public void saveProducts(String jsonResponse) throws Exception {
+        // JSON 문자열을 파싱하여 상품 리스트로 변환
+        JsonNode rootNode = objectMapper.readTree(jsonResponse);
+        JsonNode itemsNode = rootNode.path("items");
 
-        org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(headers);
+        List<Product> products = new ArrayList<>();
+        for (JsonNode itemNode : itemsNode) {
+            Product product = new Product();
+            product.setTitle(itemNode.path("title").asText()); // 상품 이름
+            product.setLprice(Integer.parseInt(itemNode.path("lprice").asText())); // 상품 가격
+            product.setCategory1(itemNode.path("category1").asText()); // 상품 카테고리
+            product.setCategory2(itemNode.path("category2").asText()); // 상품 카테고리
+            product.setCategory3(itemNode.path("category3").asText()); // 상품 카테고리
+            product.setCategory4(itemNode.path("category4").asText()); // 상품 카테고리
+            product.setMallName(itemNode.path("mallName").asText()); // 상품 카테고리
+            product.setBrand(itemNode.path("brand").asText());
+            product.setMaker(itemNode.path("maker").asText());
+            product.setProductId(itemNode.path("productId").asText());
+            product.setProductType(itemNode.path("productType").asInt());
+            product.setImage(itemNode.path("image").asText());
+            product.setLink(itemNode.path("link").asText());
 
-        // API 호출 및 응답 처리
-        org.springframework.http.ResponseEntity<Map> response = restTemplate.exchange(
-                url,
-                org.springframework.http.HttpMethod.GET,
-                entity,
-                Map.class
-        );
-        
-        // API 응답 로그 출력 (확인용)
-        log.info("API 응답: {}", response.getBody());
 
-        // 응답 데이터 추출 및 매핑
-        List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
-        
-        // DTO로 변환 후 저장
-        List<NaverProduct> naverProducts = items.stream()
-                .map(this::convertToNaverProduct)
-                .collect(Collectors.toList());
+            products.add(product);
+        }
 
         // DB에 저장
-        try {
-            naverProductRepository.saveAll(naverProducts);  // DB에 저장
-        } catch (Exception e) {
-            // 예외 발생 시 로그 출력
-            e.printStackTrace();
-        }
-        
-        return items.stream().map(this::convertToNaverProductDto).collect(Collectors.toList());
-    }
-
-    // 응답 데이터를 NaverProductDto로 변환
-    private NaverProductDto convertToNaverProductDto(Map<String, Object> item) {
-        NaverProductDto dto = new NaverProductDto();
-        dto.setTitle((String) item.get("title"));
-        dto.setLink((String) item.get("link"));
-        dto.setImage((String) item.get("image"));
-        dto.setLprice(Integer.parseInt((String) item.get("lprice")));
-        dto.setHprice(item.containsKey("hprice") ? Integer.parseInt((String) item.get("hprice")) : 0);
-        dto.setMallName((String) item.get("mallName"));
-        dto.setProductId((String) item.get("productId"));
-        dto.setBrand((String) item.get("brand"));
-        dto.setCategory1((String) item.get("category1"));
-        dto.setCategory2((String) item.get("category2"));
-        dto.setCategory3((String) item.get("category3"));
-        dto.setCategory4((String) item.get("category4"));
-        return dto;
-    }
-    
-    private NaverProduct convertToNaverProduct(Map<String, Object> item) {
-        NaverProduct productEntity = new NaverProduct();
-        productEntity.setProductId((String) item.get("productId"));
-        productEntity.setTitle((String) item.get("title"));
-        productEntity.setLink((String) item.get("link"));
-        productEntity.setImage((String) item.get("image"));
-        productEntity.setLprice(Integer.parseInt((String) item.get("lprice")));
-        productEntity.setHprice(item.containsKey("hprice") ? Integer.parseInt((String) item.get("hprice")) : 0);
-        productEntity.setMallName((String) item.get("mallName"));
-        productEntity.setBrand((String) item.get("brand"));
-        productEntity.setCategory1((String) item.get("category1"));
-        productEntity.setCategory2((String) item.get("category2"));
-        productEntity.setCategory3((String) item.get("category3"));
-        productEntity.setCategory4((String) item.get("category4"));
-        return productEntity;
+        productRepository.saveAll(products);
     }
 }
