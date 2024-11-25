@@ -61,6 +61,7 @@
         <th>가격</th>
         <th>카테고리</th>
         <th>상세 링크</th>
+        <th>위시리스트 추가</th>
     </tr>
     </thead>
     <tbody>
@@ -78,6 +79,12 @@
         <!-- 상세 링크 -->
         <td>
             <a th:href="${product.link}" target="_blank">상세 보기</a>
+        </td>
+        <td>
+            <form th:action="@{/users/wishlist/add}" method="post">
+                <input type="hidden" name="productId" th:value="${product.id}">
+                <button type="submit">위시리스트에 추가</button>
+            </form>
         </td>
     </tr>
     </tbody>
