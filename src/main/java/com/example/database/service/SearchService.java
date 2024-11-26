@@ -24,6 +24,6 @@ public class SearchService {
      * @return 검색된 제품 목록
      */
     public List<Product> searchByCategories(String category1, String category2, String category3, String category4, String query) {
-        return productRepository.findByCategoriesAndSearch(category1, category2, category3, category4, query);
+        return productRepository.findBySearchAndCategories(category1, category2, category3, category4, query);
     }
 }

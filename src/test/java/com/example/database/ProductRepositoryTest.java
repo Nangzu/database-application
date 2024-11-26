@@ -25,7 +25,7 @@ public class ProductRepositoryTest {
         String searchQuery = "LG전자";
 
         // 메서드 호출
-        List<Product> products = productRepository.findByCategoriesAndSearch(
+        List<Product> products = productRepository.findBySearchAndCategories(
                 category1, category2, category3, category4, searchQuery
         );
 
