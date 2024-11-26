@@ -12,8 +12,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.example.database.entity.EbayProduct;
-import com.example.database.repository.EbayProductRepository;
+import com.example.database.entity.Product;
+import com.example.database.repository.ProductRepository;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,12 +27,12 @@ public class EbayService {
 
     private static final Logger logger = LoggerFactory.getLogger(EbayService.class);
 
-    private final EbayProductRepository ebayproductRepository;
+    private final ProductRepository productRepository;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public EbayService(EbayProductRepository ebayproductRepository) {
-        this.ebayproductRepository = ebayproductRepository;
+    public EbayService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
         this.objectMapper = new ObjectMapper();
     }
 
@@ -76,9 +76,9 @@ public class EbayService {
             JsonNode rootNode = objectMapper.readTree(jsonResponse);
             JsonNode itemSummariesNode = rootNode.path("itemSummaries");
 
-            List<EbayProduct> products = new ArrayList<>();
+            List<Product> products = new ArrayList<>();
             for (JsonNode itemNode : itemSummariesNode) {
-                EbayProduct product = new EbayProduct();
+                Product product = new Product();
                 product.setTitle(itemNode.path("title").asText()); // 상품 아이디
                 product.setLink(itemNode.path("itemWebUrl").asText()); // 상품 이름
                 product.setLprice(itemNode.path("price").path("value").asInt()); // 상품 가격
@@ -103,7 +103,7 @@ public class EbayService {
             }
 
             // DB에 저장
-            ebayproductRepository.saveAll(products);
+            productRepository.saveAll(products);
 
         } catch (Exception e) {
             logger.error("Error saving eBay products to DB: {}", e.getMessage());
