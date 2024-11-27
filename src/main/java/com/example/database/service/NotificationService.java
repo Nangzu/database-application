@@ -35,14 +35,14 @@ public class NotificationService {
         List<Wishlist> wishlistItems = wishlistRepository.findAll();
         System.out.println("Wishlist 조회 완료. 총 아이템 수: " + wishlistItems.size());
         for (Wishlist item : wishlistItems) {
-            System.out.println("검사 중: " + item.getProduct().getTitle());
+            
             Alarm alarm = alarmRepository.findByUser(item.getUser())
                     .orElseThrow(() -> new RuntimeException("Alarm settings not found for user: " + item.getUser().getId()));
             if (alarm == null) {
                 System.out.println("알림 설정이 없는 사용자: " + item.getUser().getId());
                 continue;
             }
-            System.out.println("알림 설정 확인. 사용자 ID: " + item.getUser().getId() + ", 설정 상태: " + alarm.getAlarmConfig());
+
             if (alarm.getAlarmConfig() == 1 && // 알림 설정이 활성화된 경우
                     item.getDesiredPrice() != null &&
                     item.getDesiredPrice() >= item.getProduct().getLprice()) {
