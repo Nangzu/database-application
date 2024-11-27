@@ -16,10 +16,12 @@ public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
     private final ProductRepository productRepository;
+    private final EmailService emailService;
 
-    public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository) {
+    public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository,EmailService emailService) {
         this.wishlistRepository = wishlistRepository;
         this.productRepository = productRepository;
+        this.emailService = emailService;
     }
 
     public List<Wishlist> getWishlist(User user) {
@@ -49,5 +51,23 @@ public class WishlistService {
 
     public void removeFromWishlist(User user, Long productId) {
         wishlistRepository.deleteByUserAndProductId(user, productId);
+    }
+
+    public void updateDesiredPrice(User user, Long productId, Integer desiredPrice) {
+        Wishlist wishlistItem = wishlistRepository.findByUserAndProductId(user, productId)
+                .orElseThrow(() -> new RuntimeException("Wishlist item not found"));
+        wishlistItem.setDesiredPrice(desiredPrice);
+        wishlistRepository.save(wishlistItem);
+    }
+    @Transactional
+    public void checkAndSendEmailAlerts(Wishlist wishlist, int currentPrice) {
+        if (wishlist.getDesiredPrice() != null && currentPrice <= wishlist.getDesiredPrice()) {
+            String userEmail = wishlist.getUser().getEmail();
+            String subject = "가격 알림: " + wishlist.getProduct().getTitle();
+            String body = "안녕하세요, " + wishlist.getUser().getUsername() + "님.\n" +
+                    "상품 '" + wishlist.getProduct().getTitle() +
+                    "'의 가격이 희망 가격 이하로 내려갔습니다.\n현재 가격: " + currentPrice + "원";
+            emailService.sendEmail(userEmail, subject, body);
+        }
     }
 }

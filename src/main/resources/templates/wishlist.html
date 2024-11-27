@@ -19,6 +19,11 @@
         <td th:text="${item.product.title}"></td>
         <td th:text="${item.product.lprice}"></td>
         <td>
+            <form th:action="@{/users/wishlist/update-price}" method="post">
+                <input type="hidden" name="productId" th:value="${item.product.id}">
+                <input type="number" name="desiredPrice" placeholder="희망 가격" th:value="${item.desiredPrice}">
+                <button type="submit">저장</button>
+            </form>
             <form th:action="@{/users/wishlist/remove}" method="post">
                 <input type="hidden" name="productId" th:value="${item.product.id}">
                 <button type="submit">삭제</button>

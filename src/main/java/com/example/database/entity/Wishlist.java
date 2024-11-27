@@ -15,6 +15,9 @@ public class Wishlist {
     @Column(name = "WISH_NUM")
     private Long id;
 
+    @Column(name ="desired_price")
+    private Integer desiredPrice;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user; // 위시리스트는 특정 사용자와 연결됩니다.

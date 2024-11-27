@@ -8,11 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     List<Wishlist> findByUser(User user);
     @Modifying
     @Query("DELETE FROM Wishlist w WHERE w.user = :user AND w.product.id = :productId")
     void deleteByUserAndProductId(@Param("user") User user, @Param("productId") Long productId);
+
+    Optional<Wishlist> findByUserAndProductId(User user, Long productId);
 
 }

@@ -52,4 +52,16 @@ public class WishlistController {
     public String goToMyPage() {
         return "redirect:/users/mypage";  // 마이페이지로 리다이렉트
     }
+
+    @PostMapping("/update-price")
+    public String updateDesiredPrice(@RequestParam Long productId,
+                                     @RequestParam Integer desiredPrice,
+                                     HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser != null) {
+            wishlistService.updateDesiredPrice(loggedInUser, productId, desiredPrice);
+        }
+        return "redirect:/users/wishlist";
+    }
+
 }

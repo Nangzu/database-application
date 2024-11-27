@@ -1,9 +1,9 @@
 <!-- mypage.html -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>My Page</title>
 </head>
 <body>
+<div th:replace="~{layout.html :: content}">
 <h2>마이페이지</h2>
 
 <!-- 로그인한 유저 정보 표시 -->
@@ -15,11 +15,24 @@
 
 <!-- 위시리스트로 이동하는 버튼 -->
 <a href="/users/wishlist"><button>위시리스트 보기</button></a>
+<form action="/users/update-alarm-config" method="post">
+    <label>
+        <!-- 체크박스 -->
+        <input type="checkbox" name="enableAlarm" value="true" th:checked="${alarmConfig == 1}">
+        알림 받기
+    </label>
+    <!-- 체크박스 선택되지 않은 경우를 위한 숨겨진 필드 -->
+    <input type="hidden" name="enableAlarm" value="false">
+    <button type="submit">저장</button>
+</form>
+
 
 <!-- 비밀번호 변경 버튼 -->
 <a href="/users/change-password"><button>비밀번호 변경</button></a>
 <form th:action="@{/users/delete-account}" method="post">
     <button type="submit">회원 탈퇴</button>
 </form>
+
+</div>
 </body>
 </html>
