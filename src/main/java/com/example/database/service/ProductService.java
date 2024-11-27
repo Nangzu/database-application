@@ -13,35 +13,27 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Product> searchByName(String name) {
-        return productRepository.findByTitleContaining(name);
+    public List<String> getCategory1() {
+        return productRepository.findDistinctCategory1();
     }
 
-    public List<Product> searchByCategory(String category) {
-        return productRepository.findByCategory_CateName(category);
+    public List<String> getCategory2(String category1) {
+        return productRepository.findDistinctCategory2ByCategory1(category1);
+    }
+
+    public List<String> getCategory3(String category2) {
+        return productRepository.findDistinctCategory3ByCategory2(category2);
+    }
+
+    public List<String> getCategory4(String category3) {
+        return productRepository.findDistinctCategory4ByCategory3(category3);
+    }
+
+    public List<Product> searchProducts(String searchQuery, String category1, String category2, String category3, String category4) {
+        return productRepository.findBySearchAndCategories(searchQuery, category1, category2, category3, category4);
     }
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
-    }
-
-    // 대분류(Category1) 검색
-    public List<Product> searchByCategory1(String category1) {
-        return productRepository.findByCategory1(category1);
-    }
-
-    // 대분류 + 중분류(Category1 + Category2)
-    public List<Product> searchByCategory1And2(String category1, String category2) {
-        return productRepository.findByCategory1AndCategory2(category1, category2);
-    }
-
-    // 대분류 + 중분류 + 소분류(Category1 + Category2 + Category3)
-    public List<Product> searchByCategory1And2And3(String category1, String category2, String category3) {
-        return productRepository.findByCategory1AndCategory2AndCategory3(category1, category2, category3);
-    }
-
-    // 대분류 + 중분류 + 소분류 + 세부분류(Category1 + Category2 + Category3 + Category4)
-    public List<Product> searchByCategory1And2And3And4(String category1, String category2, String category3, String category4) {
-        return productRepository.findByCategory1AndCategory2AndCategory3AndCategory4(category1, category2, category3, category4);
     }
 }
