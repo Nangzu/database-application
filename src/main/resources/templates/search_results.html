@@ -41,7 +41,6 @@
            th:value="${param.name}" />
     <br>
 
-
 <form id="searchForm">
     <label for="category1">대분류:</label>
     <select id="category1" name="category1" onchange="loadSubcategories('category1', 'category2')">
@@ -59,7 +58,7 @@
     </select>
 
     <label for="category4">세부분류:</label>
-    <select id="category4" name="category4">
+    <select id="category4" name="category4" onchange="this.form.submit()">
         <option value="">-- 선택하세요 --</option>
     </select>
 

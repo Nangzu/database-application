@@ -16,12 +16,14 @@ public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
     private final ProductRepository productRepository;
+
     private final EmailService emailService;
 
     public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository,EmailService emailService) {
         this.wishlistRepository = wishlistRepository;
         this.productRepository = productRepository;
         this.emailService = emailService;
+
     }
 
     public List<Wishlist> getWishlist(User user) {
@@ -53,6 +55,7 @@ public class WishlistService {
         wishlistRepository.deleteByUserAndProductId(user, productId);
     }
 
+
     public void updateDesiredPrice(User user, Long productId, Integer desiredPrice) {
         Wishlist wishlistItem = wishlistRepository.findByUserAndProductId(user, productId)
                 .orElseThrow(() -> new RuntimeException("Wishlist item not found"));
@@ -70,4 +73,5 @@ public class WishlistService {
             emailService.sendEmail(userEmail, subject, body);
         }
     }
+
 }
