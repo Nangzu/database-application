@@ -28,7 +28,7 @@ public class MainController {
     // 검색 로직
     @GetMapping("/main/search")
     public String search(
-            @RequestParam(required = false) String query,
+            @RequestParam(required = false) String searchQuery,
             @RequestParam(required = false) String category1,
             @RequestParam(required = false) String category2,
             @RequestParam(required = false) String category3,
@@ -36,7 +36,7 @@ public class MainController {
             Model model
     ) {
         // 검색 수행
-        List<Product> products = searchService.searchByCategories(category1, category2, category3, category4, query);
+        List<Product> products = searchService.searchByCategories(category1, category2, category3, category4, searchQuery);
 
         // 검색 결과가 없을 경우 메시지 추가
         if (products.isEmpty()) {

@@ -111,8 +111,8 @@
 
     async function performSearch() {
         const formData = new FormData(document.getElementById('searchForm'));
-        const queryString = new URLSearchParams(formData).toString();
-        const response = await fetch(`/api/products/search?${queryString}`);
+        const searchQueryString = new URLSearchParams(formData).toString();
+        const response = await fetch(`/api/products/search?${searchQueryString}`);
         const results = await response.json();
 
         const resultsBody = document.getElementById('resultsBody');
@@ -127,7 +127,17 @@
         `).join('');
     }
 
-    document.addEventListener('DOMContentLoaded', loadCategory1);
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCategory1(); // 카테고리1 초기 로드
+
+        // 엔터 키로 폼 제출 방지
+        document.getElementById('searchForm').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // 기본 동작 차단
+                performSearch(); // 검색 로직 실행
+            }
+        });
+    });
 </script>
 </body>
 </html>
