@@ -1,9 +1,9 @@
 <!-- mypage.html -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <script src = "/js/alarm.js"></script>
 </head>
 <body>
-<div th:replace="~{layout.html :: content}">
 <h2>마이페이지</h2>
 
 <!-- 로그인한 유저 정보 표시 -->
@@ -33,7 +33,16 @@
 <form th:action="@{/users/delete-account}" method="post">
     <button type="submit">회원 탈퇴</button>
 </form>
-
+<!-- 알림 모달 HTML -->
+<div id="notificationModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, -20%); padding: 20px; background-color: white; border: 1px solid black; z-index: 1000;">
+    <h3>알림</h3>
+    <div id="notifications"></div>
+    <button onclick="closeModal()">닫기</button>
 </div>
+<!-- 모달 배경 -->
+<div id="modalBackground" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+<script>
+    window.onload = fetchNotifications; // 페이지 로드 시 알림 호출
+</script>
 </body>
 </html>

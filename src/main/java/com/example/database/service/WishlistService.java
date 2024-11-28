@@ -43,7 +43,11 @@ public class WishlistService {
     public void addToWishlist(User user, Long productId) {
         // 상품과 사용자를 먼저 찾기
         Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-
+        // 중복 검사
+        boolean exists = wishlistRepository.existsByUserAndProductId(user, productId);
+        if (exists) {
+            throw new RuntimeException("Product is already in the wishlist");
+        }
 
         Wishlist wishlist = new Wishlist();
         wishlist.setUser(user);

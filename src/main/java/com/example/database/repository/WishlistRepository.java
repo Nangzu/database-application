@@ -14,6 +14,8 @@ import java.util.Optional;
 
 public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     List<Wishlist> findByUser(User user);
+    boolean existsByUserAndProductId(User user, Long productId);
+
     @Modifying
     @Query("DELETE FROM Wishlist w WHERE w.user = :user AND w.product.id = :productId")
     void deleteByUserAndProductId(@Param("user") User user, @Param("productId") Long productId);

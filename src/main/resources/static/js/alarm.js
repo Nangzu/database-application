@@ -13,7 +13,8 @@
                     p.textContent = notification.message; // 알림 메시지 추가
                     notificationDiv.appendChild(p);
                 });
-
+                document.getElementById('notificationModal').style.display = 'block';
+                document.getElementById('modalBackground').style.display = 'block';
                 // 알림 모달 띄우기
                 const modal = document.getElementById('notificationModal');
                 modal.style.display = 'block';
@@ -28,5 +29,7 @@
     // 알림 모달 닫기
     function closeModal() {
     const modal = document.getElementById('notificationModal');
+    const background = document.getElementById('modalBackground');
     modal.style.display = 'none';
+    background.style.display = 'none';
 }

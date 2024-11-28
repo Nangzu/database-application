@@ -37,7 +37,8 @@ public class WishlistController {
         if (loggedInUser != null) {
             wishlistService.addToWishlist(loggedInUser, productId);
         }
-        return "redirect:/users/wishlist";
+
+        return "redirect:/users/login";
     }
 
     @PostMapping("/remove")
