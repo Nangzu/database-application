@@ -39,4 +39,6 @@ public class SearchController {
         List<Product> products = searchService.searchByCategories(category1, category2, category3, category4, searchQuery);
         return ResponseEntity.ok(products);
     }
+
+
 }

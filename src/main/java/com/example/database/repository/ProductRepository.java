@@ -24,7 +24,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<String> findDistinctCategory4ByCategory3(@Param("category3") String category3);
 
     @Query("SELECT p FROM Product p WHERE " +
-            "(:searchQuery IS NULL OR p.title LIKE %:searchQuery%) AND " +
+            "(LOWER(p.title) LIKE LOWER(CONCAT('%', :searchQuery, '%')) OR :searchQuery IS NULL) AND " +
             "(:category1 IS NULL OR p.category1 = :category1) AND " +
             "(:category2 IS NULL OR p.category2 = :category2) AND " +
             "(:category3 IS NULL OR p.category3 = :category3) AND " +
