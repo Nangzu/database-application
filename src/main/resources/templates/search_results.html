@@ -33,13 +33,13 @@
 <body>
 <h1>상품 검색 결과</h1>
 
-<!-- 검색 필터 폼 -->
+<!-- 검색 필터 폼
 <form action="/main/search" method="get">
     <label for="name">상품명:</label>
     <input type="text" id="name" name="name" placeholder="상품명을 입력하세요"
            th:value="${param.name}" />
     <br>
-</form>
+</form>-->
 <form id="searchForm">
     <label for="category1">대분류:</label>
     <select id="category1" name="category1" onchange="loadSubcategories('category1', 'category2')">
@@ -66,7 +66,13 @@
 
     <button type="button" onclick="performSearch()">검색</button>
 </form>
-
+<h3>최근 검색 기록</h3>
+<ul>
+    <!-- 최근 검색 기록을 표시 -->
+    <th:block th:each="search : ${recentSearches}">
+        <li th:text="${search.history}"></li> <!-- 검색 기록을 표시 -->
+    </th:block>
+</ul>
 <h2>검색 결과</h2>
 <table id="resultsTable">
     <thead>
@@ -139,6 +145,18 @@
         const queryString = new URLSearchParams(formData).toString();
         const response = await fetch(`/api/products/search?${queryString}`);
         const results = await response.json();
+
+        // 검색어를 서버로 전송하여 기록을 저장하도록 함
+        const searchQuery = formData.get('searchQuery');  // 검색어 가져오기
+        if (searchQuery) {
+            await fetch('/api/search-history', {  // 검색 기록을 저장하는 API 호출
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ history: searchQuery })
+            });
+        }
 
         const resultsBody = document.getElementById('resultsBody');
         resultsBody.innerHTML = results.map(product => `

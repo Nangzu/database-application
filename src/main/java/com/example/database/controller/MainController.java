@@ -1,6 +1,7 @@
 package com.example.database.controller;
 
 import com.example.database.entity.Product;
+import com.example.database.service.SearchHistoryService;
 import com.example.database.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,8 +14,13 @@ import java.util.List;
 @Controller
 public class MainController {
 
+    private final SearchHistoryService searchHistoryService;
     @Autowired
     private SearchService searchService;
+
+    public MainController(SearchHistoryService searchHistoryService) {
+        this.searchHistoryService = searchHistoryService;
+    }
 
     // 메인 페이지
     @GetMapping("/main")
