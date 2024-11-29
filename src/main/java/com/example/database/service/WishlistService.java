@@ -16,7 +16,6 @@ public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
     private final ProductRepository productRepository;
-
     private final EmailService emailService;
 
     public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository,EmailService emailService) {
@@ -43,11 +42,13 @@ public class WishlistService {
     public void addToWishlist(User user, Long productId) {
         // 상품과 사용자를 먼저 찾기
         Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-        // 중복 검사
-        boolean exists = wishlistRepository.existsByUserAndProductId(user, productId);
+        //중복검사
+        boolean exists = wishlistRepository.existsByUserAndProduct(user, productId);
         if (exists) {
-            throw new RuntimeException("Product is already in the wishlist");
+            return;
         }
+
+
 
         Wishlist wishlist = new Wishlist();
         wishlist.setUser(user);
