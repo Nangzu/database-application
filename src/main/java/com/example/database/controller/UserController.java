@@ -36,18 +36,23 @@ public class UserController {
 
     // 로그인 페이지
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser != null) {
+            // 로그인 상태라면 마이페이지로 리다이렉트
+            return "redirect:/users/mypage";
+        }
         return "login";
     }
 
     // 로그인 처리
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password, HttpSession session) {
+
         boolean isAuthenticated = userService.authenticateUser(email, password);
 
         if (isAuthenticated) {
             Optional<User> userOptional = userService.findByEmail(email);
-            //User user = userOptional.orElseThrow(() -> new RuntimeException("User not found"));
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 session.setAttribute("loggedInUser", user);  // 세션에 User 객체 저장
@@ -73,15 +78,20 @@ public class UserController {
         return "register";
     }
     // 마이페이지 (로그인한 사용자의 정보를 표시)
+
     @GetMapping("/mypage")
     public String myPage(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
             return "redirect:/users/login";  // 로그인 상태가 아니면 로그인 페이지로 리다이렉트
         }
-        model.addAttribute("loggedInUser", loggedInUser);  // 모델에 User 객체 추가
-        return "mypage";  // mypage.html 페이지로 이동
+        boolean alarmConfig = userService.getAlarmConfig(loggedInUser);  // 알림 설정 값 조회
+        model.addAttribute("loggedInUser", loggedInUser);
+        model.addAttribute("alarmConfig", alarmConfig);  // 모델에 추가
+        return "mypage";
     }
+
+
     // 비밀번호 변경 페이지
     @GetMapping("/change-password")
     public String changePasswordPage() {
@@ -135,4 +145,13 @@ public class UserController {
 
         return "redirect:/users/login";  // 로그인 페이지로 리다이렉트
     }
+    @PostMapping("/update-alarm-config")
+    public String updateAlarmConfig(@RequestParam(required = false, defaultValue = "false") boolean enableAlarm, HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser != null) {
+            userService.updateAlarmConfig(loggedInUser, enableAlarm);
+        }
+        return "redirect:/users/mypage";
+    }
+
 }
