@@ -1,53 +1,48 @@
-<!DOCTYPE html>
+<!-- mypage.html -->
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <script src="/js/alarm.js"></script>
-    <link rel="stylesheet" href="/css/mypage.css">
+    <script src = "/js/alarm.js"></script>
 </head>
 <body>
-<div class="mypage-container">
-    <h2>마이페이지</h2>
+<h2>마이페이지</h2>
 
-    <!-- 로그인한 유저 정보 표시 -->
-    <div class="user-info">
-        <p th:if="${loggedInUser != null}">이름: <span th:text="${loggedInUser.username}"></span></p>
-        <p th:if="${loggedInUser != null}">이메일: <span th:text="${loggedInUser.email}"></span></p>
-        <p th:if="${loggedInUser == null}">로그인유저 Null</p>
-    </div>
+<!-- 로그인한 유저 정보 표시 -->
+<p th:if="${loggedInUser != null}">이름: <span th:text="${loggedInUser.username}"></span></p>
+<p th:if="${loggedInUser != null}">이메일: <span th:text="${loggedInUser.email}"></span></p>
 
-    <!-- 위시리스트로 이동하는 버튼 -->
-    <a href="/users/wishlist"><button class="mypage-btn">위시리스트 보기</button></a>
+<!-- 로그인 유저가 null일 경우 -->
+<p th:if="${loggedInUser == null}">로그인유저 Null</p>
 
-    <!-- 알림 설정 -->
-    <form action="/users/update-alarm-config" method="post" class="alarm-form">
-        <label>
-            <input type="checkbox" name="enableAlarm" value="true" th:checked="${alarmConfig == 1}">
-            알림 받기
-        </label>
-        <input type="hidden" name="enableAlarm" value="false">
-        <button type="submit" class="mypage-btn">저장</button>
-    </form>
+<!-- 위시리스트로 이동하는 버튼 -->
+<a href="/users/wishlist"><button>위시리스트 보기</button></a>
+<form action="/users/update-alarm-config" method="post">
+    <label>
+        <!-- 체크박스 -->
+        <input type="checkbox" name="enableAlarm" value="true" th:checked="${alarmConfig == 1}">
+        알림 받기
+    </label>
+    <!-- 체크박스 선택되지 않은 경우를 위한 숨겨진 필드 -->
+    <input type="hidden" name="enableAlarm" value="false">
+    <button type="submit">저장</button>
+</form>
 
-    <!-- 비밀번호 변경 버튼 -->
-    <a href="/users/change-password"><button class="mypage-btn">비밀번호 변경</button></a>
 
-    <!-- 회원 탈퇴 버튼 -->
-    <form th:action="@{/users/delete-account}" method="post">
-        <button type="submit" class="mypage-btn delete-btn">회원 탈퇴</button>
-    </form>
 
-    <!-- 알림 모달 -->
-    <div id="notificationModal" style="display: none;">
-        <h3>알림</h3>
-        <div id="notifications"></div>
-        <button onclick="closeModal()">닫기</button>
-    </div>
-    <!-- 모달 배경 -->
-    <div id="modalBackground" style="display: none;"></div>
-
-    <script>
-        window.onload = fetchNotifications; // 페이지 로드 시 알림 호출
-    </script>
+<!-- 비밀번호 변경 버튼 -->
+<a href="/users/change-password"><button>비밀번호 변경</button></a>
+<form th:action="@{/users/delete-account}" method="post">
+    <button type="submit">회원 탈퇴</button>
+</form>
+<!-- 알림 모달 HTML -->
+<div id="notificationModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, -20%); padding: 20px; background-color: white; border: 1px solid black; z-index: 1000;">
+    <h3>알림</h3>
+    <div id="notifications"></div>
+    <button onclick="closeModal()">닫기</button>
 </div>
+<!-- 모달 배경 -->
+<div id="modalBackground" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+<script>
+    window.onload = fetchNotifications; // 페이지 로드 시 알림 호출
+</script>
 </body>
 </html>
