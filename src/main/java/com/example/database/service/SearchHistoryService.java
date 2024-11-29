@@ -14,9 +14,17 @@ public class SearchHistoryService {
     private SearchHistoryRepository searchHistoryRepository;
 
     public List<SearchHistory> getRecentSearchHistory(Long userId) {
-        return searchHistoryRepository.findTop5ByUserIdOrderByShNumDesc(userId);  // 사용자 ID를 기준으로 최근 5개 검색 기록을 가져옵니다.
+        return searchHistoryRepository.findTop5ByUserIdOrderByShNumDesc(userId);
     }
+
     public void saveSearchHistory(SearchHistory searchHistory) {
-        searchHistoryRepository.save(searchHistory);  // DB에 저장
+        // 중복 확인 로직 추가
+        boolean exists = searchHistoryRepository.existsByUserIdAndHistory(
+                searchHistory.getUserId(), searchHistory.getHistory()
+        );
+        if (!exists) {
+            searchHistoryRepository.save(searchHistory);
+        }
     }
+
 }

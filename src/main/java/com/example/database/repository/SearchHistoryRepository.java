@@ -13,5 +13,11 @@ import java.util.List;
 
 @Repository
 public interface SearchHistoryRepository extends JpaRepository<SearchHistory, Long> {
-    List<SearchHistory> findTop5ByUserIdOrderByShNumDesc(Long userId);  // 최근 5개의 검색 기록을 가져옵니다.
+
+    // JPQL을 사용하여 중복 체크
+    @Query("SELECT COUNT(sh) > 0 FROM SearchHistory sh WHERE sh.userId = :userId AND sh.history = :history")
+    boolean existsByUserIdAndHistory(Long userId, String history);
+
+    @Query("SELECT sh FROM SearchHistory sh WHERE sh.userId = :userId ORDER BY sh.shNum DESC")
+    List<SearchHistory> findTop5ByUserIdOrderByShNumDesc(@Param("userId") Long userId);
 }

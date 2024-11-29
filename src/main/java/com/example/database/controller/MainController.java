@@ -1,8 +1,10 @@
 package com.example.database.controller;
 
 import com.example.database.entity.Product;
+import com.example.database.entity.User;
 import com.example.database.service.SearchHistoryService;
 import com.example.database.service.SearchService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,8 +26,10 @@ public class MainController {
 
     // 메인 페이지
     @GetMapping("/main")
-    public String main(Model model) {
+    public String main(Model model, HttpSession session) {
         // 검색 조건 없이 전체 상품 조회
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("loggedInUser", loggedInUser); // 템플릿에 로그인 사용자 정보 전달
         List<Product> products = searchService.searchByCategories(null, null, null, null, null);
         model.addAttribute("products", products);
         return "search_results"; // 검색 결과 화면

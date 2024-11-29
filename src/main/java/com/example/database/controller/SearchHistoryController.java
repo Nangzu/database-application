@@ -4,12 +4,16 @@ package com.example.database.controller;
 import com.example.database.entity.SearchHistory;
 import com.example.database.entity.User;
 import com.example.database.service.SearchHistoryService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -18,18 +22,29 @@ public class SearchHistoryController {
     @Autowired
     private SearchHistoryService searchHistoryService;
 
-    @GetMapping("/search-history")
-    public String getSearchHistory(Model model, User user) {
-        Long userId = user.getId();  // 현재 로그인한 사용자의 ID를 가져옵니다.
-        List<SearchHistory> searchHistoryList = searchHistoryService.getRecentSearchHistory(userId);
-        model.addAttribute("searchHistoryList", searchHistoryList);  // 검색 기록을 모델에 추가
-        return "search-history";  // 검색 기록을 표시할 뷰로 이동
+    // 검색 기록을 JSON 형태로 반환하는 엔드포인트 추가
+    @GetMapping("/api/search-history")
+    @ResponseBody
+    public List<SearchHistory> getSearchHistory(HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return List.of();  // 비로그인 상태에서는 빈 리스트 반환
+        }
+        Long userId = loggedInUser.getId();
+        return searchHistoryService.getRecentSearchHistory(userId); // 최근 검색 기록을 반환
     }
 
-    // 검색어를 받는 API
+
     @PostMapping("/api/search-history")
-    public String addSearchHistory(@RequestBody SearchHistory searchHistory) {
-        searchHistoryService.saveSearchHistory(searchHistory);  // 검색 기록을 저장하는 서비스 호출
-        return "검색 기록이 저장되었습니다.";
+    @ResponseBody
+    public ResponseEntity<String> addSearchHistory(@RequestBody SearchHistory searchHistory, HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+        searchHistory.setUserId(loggedInUser.getId());
+        searchHistoryService.saveSearchHistory(searchHistory);
+        return ResponseEntity.ok("검색 기록이 저장되었습니다.");
     }
+
 }

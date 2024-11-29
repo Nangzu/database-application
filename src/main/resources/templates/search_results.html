@@ -33,13 +33,6 @@
 <body>
 <h1>상품 검색 결과</h1>
 
-<!-- 검색 필터 폼
-<form action="/main/search" method="get">
-    <label for="name">상품명:</label>
-    <input type="text" id="name" name="name" placeholder="상품명을 입력하세요"
-           th:value="${param.name}" />
-    <br>
-</form>-->
 <form id="searchForm">
     <label for="category1">대분류:</label>
     <select id="category1" name="category1" onchange="loadSubcategories('category1', 'category2')">
@@ -66,13 +59,11 @@
 
     <button type="button" onclick="performSearch()">검색</button>
 </form>
+
 <h3>최근 검색 기록</h3>
-<ul>
-    <!-- 최근 검색 기록을 표시 -->
-    <th:block th:each="search : ${recentSearches}">
-        <li th:text="${search.history}"></li> <!-- 검색 기록을 표시 -->
-    </th:block>
-</ul>
+<div id="searchHistoryArea" style="display: flex; overflow-x: auto; gap: 10px; flex-wrap: nowrap;">
+    <!-- 검색 결과를 여기에 동적으로 추가 -->
+</div>
 <h2>검색 결과</h2>
 <table id="resultsTable">
     <thead>
@@ -139,7 +130,18 @@
             targetSelect.appendChild(option);
         });
     }
+    async function loadSearchHistory() {
+        const response = await fetch('/api/search-history');
+        const history = await response.json();
 
+        const searchHistoryArea = document.getElementById('searchHistoryArea');
+        searchHistoryArea.innerHTML = ''; // 이전 기록을 지움
+        history.forEach(item => {
+            const historyItem = document.createElement('li');
+            historyItem.textContent = item.history;
+            searchHistoryArea.appendChild(historyItem);
+        });
+    }
     async function performSearch() {
         const formData = new FormData(document.getElementById('searchForm'));
         const searchQueryString = new URLSearchParams(formData).toString();
@@ -149,13 +151,13 @@
         // 검색어를 서버로 전송하여 기록을 저장하도록 함
         const searchQuery = formData.get('searchQuery');  // 검색어 가져오기
         if (searchQuery) {
-            await fetch('/api/search-history', {  // 검색 기록을 저장하는 API 호출
+            const historyResponse = await fetch('/api/search-history', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ history: searchQuery })
             });
+            const message = await historyResponse.text();
+            alert(message);
         }
 
         const resultsBody = document.getElementById('resultsBody');
@@ -171,11 +173,13 @@
             </td>
             </tr>
         `).join('');
+
+        loadSearchHistory();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         loadCategory1(); // 카테고리1 초기 로드
-
+        loadSearchHistory(); //최근 검색기록 로드
         // 엔터 키로 폼 제출 방지
         document.getElementById('searchForm').addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
