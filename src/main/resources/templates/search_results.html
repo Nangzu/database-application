@@ -94,23 +94,6 @@
         });
         await performSearch(); // 초기 로드 시 모든 상품 표시
     }
-    function addToWishlist(productId) {
-        fetch('/users/wishlist/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({ productId: productId })
-        })
-            .then(response => response.text())
-            .then(message => {
-                alert(message); // 서버에서 반환된 메시지 표시
-            })
-            .catch(error => {
-                console.error('Error adding to wishlist:', error);
-                alert('에러가 발생했습니다.');
-            });
-    }
 
     async function loadSubcategories(currentCategoryId, targetCategoryId) {
         const selectedValue = document.getElementById(currentCategoryId).value;
@@ -169,7 +152,11 @@
                 <td>${product.category1} > ${product.category2} > ${product.category3} > ${product.category4}</td>
                 <td><a href="${product.link}" target="_blank">상세 보기</a></td>
            <td>
-                <button onclick="addToWishlist(${product.id})">위시리스트 추가</button>
+
+                <form method="POST" action="/users/wishlist/add">
+                    <input type="hidden" name="productId" value="${product.id}">
+                    <button type="submit">위시리스트 추가</button>
+                </form>
             </td>
             </tr>
         `).join('');
