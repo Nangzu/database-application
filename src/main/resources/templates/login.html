@@ -2,23 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
+    <link rel="stylesheet" href="/css/login.css"> <!-- CSS 파일 연결 -->
 </head>
 <body>
-<h2>Login</h2>
-<div th:if="${param.error}">
-    <p style="color:red;">로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요.</p>
+<div class="form-container">
+    <h2>로그인</h2>
+    <div th:if="${param.error}" class="error-message">
+        <p>로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요.</p>
+    </div>
+    <form th:action="@{/users/login}" method="post">
+        <label for="email">이메일</label>
+        <input type="email" id="email" name="email" required><br>
+
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" required><br>
+
+        <button type="submit">로그인</button>
+    </form>
+    <a href="/users/register"><button>회원가입</button></a>
 </div>
-<form th:action="@{/users/login}" method="post">
-
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br>
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br>
-
-    <button type="submit">Login</button>
-
-</form>
-<a href="/users/register"><button>회원가입</button></a>
 </body>
 </html>
