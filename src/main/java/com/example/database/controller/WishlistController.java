@@ -35,7 +35,7 @@ public class WishlistController {
     public String addToWishlist(@RequestParam Long productId, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
 
-        if (loggedInUser == null) {
+        if (loggedInUser != null) {
             wishlistService.addToWishlist(loggedInUser, productId);
         }
 
