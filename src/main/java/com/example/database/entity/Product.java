@@ -1,7 +1,11 @@
 package com.example.database.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -57,6 +61,11 @@ public class Product {
     private String currency;
 
     @ManyToOne
-    @JoinColumn(name = "cate_num") // 외래 키로 `Category`와 연결
+    @JoinColumn(name = "cate_num") // Category와 연결
     private Category category;
+
+    // Price 테이블과 연결 (Shop과의 간접적인 관계)
+    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY)
+    @JsonManagedReference // 순환 참조 방지
+    private List<Price> prices;
 }

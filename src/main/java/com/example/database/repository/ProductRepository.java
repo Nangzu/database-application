@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 
@@ -37,4 +38,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("category3") String category3,
             @Param("category4") String category4
     );
+
 }

@@ -1,39 +1,50 @@
 package com.example.database.service;
 
+import com.example.database.entity.Price;
 import com.example.database.entity.Product;
+import com.example.database.entity.Shop;
+import com.example.database.repository.PriceRepository;
 import com.example.database.repository.ProductRepository;
+import com.example.database.repository.ShopRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
 
-//    @Autowired
-//    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final ShopRepository shopRepository;
+    private final PriceRepository priceRepository;
 
-//    public List<String> getCategory1() {
-//        return productRepository.findDistinctCategory1();
-//    }
-//
-//    public List<String> getCategory2(String category1) {
-//        return productRepository.findDistinctCategory2ByCategory1(category1);
-//    }
-//
-//    public List<String> getCategory3(String category2) {
-//        return productRepository.findDistinctCategory3ByCategory2(category2);
-//    }
-//
-//    public List<String> getCategory4(String category3) {
-//        return productRepository.findDistinctCategory4ByCategory3(category3);
-//    }
-//
-//    public List<Product> searchProducts(String searchQuery, String category1, String category2, String category3, String category4) {
-//        return productRepository.findBySearchAndCategories(searchQuery, category1, category2, category3, category4);
-//    }
-//
-//    public List<Product> getAllProducts() {
-//        return productRepository.findAll();
-//    }
+    public ProductService(ProductRepository productRepository, ShopRepository shopRepository, PriceRepository priceRepository) {
+        this.productRepository = productRepository;
+        this.shopRepository = shopRepository;
+        this.priceRepository = priceRepository;
+    }
+    @Transactional
+    public Optional<Product> getProductById(Long productId) {
+        return productRepository.findById(productId);
+    }
+
+    @Transactional
+    public Optional<Product> getProductByIdWithShop(Long productId) {
+        Optional<Product> productOpt = productRepository.findById(productId);
+        productOpt.ifPresent(product -> {
+            // 가격 정보와 연관된 Shop 정보를 초기화
+            product.getPrices().forEach(price -> price.getShop());
+        });
+        return productOpt;
+    }
+
+    public void savePrice(Price price) {
+        // 가격을 저장
+        priceRepository.save(price);
+    }
+
+
 }
