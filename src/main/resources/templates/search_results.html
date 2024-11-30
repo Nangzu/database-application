@@ -3,32 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>상품 검색</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        img {
-            max-width: 150px;
-            height: auto;
-        }
-
-        a {
-            text-decoration: none;
-            color: blue;
-        }
-    </style>
+    <!-- 외부 CSS 파일을 링크 -->
+    <link rel="stylesheet" href="/css/search_results.css">
+    <link rel="stylesheet" href="/css/mypage-modal.css">
 </head>
 <body>
 <h1>상품 검색 결과</h1>
@@ -81,6 +58,40 @@
     </tbody>
 </table>
 
+<!-- 마이페이지 이동 버튼 -->
+<button class="mypage-button" onclick="openMypageModal()">마이페이지</button>
+
+<!-- 모달 창 (마이페이지) -->
+<div id="mypageModal" class="mypage-modal">
+    <div class="mypage-modal-content">
+        <span class="close-btn" onclick="closeMypageModal()">&times;</span>
+        <h2>마이페이지</h2>
+
+        <div class="user-info">
+            <p th:if="${loggedInUser != null}">이름: <span th:text="${loggedInUser.username}"></span></p>
+            <p th:if="${loggedInUser != null}">이메일: <span th:text="${loggedInUser.email}"></span></p>
+            <p th:if="${loggedInUser == null}">로그인유저 Null</p>
+        </div>
+
+        <a href="/users/wishlist"><button class="mypage-btn">위시리스트 보기</button></a>
+        <form action="/users/update-alarm-config" method="post" class="alarm-form">
+            <label>
+                <input type="checkbox" name="enableAlarm" value="true"> 알림 받기
+            </label>
+            <button type="submit" class="mypage-btn">저장</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openMypageModal() {
+        document.getElementById('mypageModal').style.display = 'block';
+    }
+
+    function closeMypageModal() {
+        document.getElementById('mypageModal').style.display = 'none';
+    }
+</script>
 <script>
     async function loadCategory1() {
         const response = await fetch('/api/products/category1');
@@ -113,6 +124,7 @@
             targetSelect.appendChild(option);
         });
     }
+
     async function loadSearchHistory() {
         const response = await fetch('/api/search-history');
         const history = await response.json();
@@ -125,6 +137,7 @@
             searchHistoryArea.appendChild(historyItem);
         });
     }
+
     async function performSearch() {
         const formData = new FormData(document.getElementById('searchForm'));
         const searchQueryString = new URLSearchParams(formData).toString();
@@ -175,6 +188,7 @@
             }
         });
     });
+
 </script>
 
 </body>

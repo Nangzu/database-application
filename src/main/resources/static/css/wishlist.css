@@ -1,0 +1,137 @@
+/* 스타일 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 테이블 스타일 */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* 테이블에 그림자 추가 */
+    border-radius: 8px; /* 테이블 모서리 둥글게 */
+}
+
+/* 테이블 헤더 스타일 */
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px; /* 글씨 크기 적당히 조정 */
+}
+
+/* 테이블 헤더 배경색 */
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 이미지 스타일 */
+img {
+    max-width: 150px;
+    height: auto;
+    border-radius: 8px; /* 이미지 모서리 둥글게 */
+    object-fit: cover;
+}
+
+/* 링크 스타일 */
+a {
+    text-decoration: none;
+    color: #ff5722; /* 링크 색상 */
+}
+
+a:hover {
+    color: #e64a19; /* 링크 마우스 오버 시 색상 */
+}
+
+/* 마이페이지 버튼 스타일 */
+.mypage-button {
+    position: fixed;
+    top: 20px;  /* 상단 여백을 충분히 설정 */
+    right: 20px;
+    padding: 10px 15px;
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 1000; /* 다른 요소들보다 위에 표시되도록 설정 */
+}
+
+.mypage-button:hover {
+    background-color: #e64a19; /* 마우스 오버 시 색상 */
+}
+
+/* 검색 폼 스타일 */
+form {
+    margin-bottom: 20px;
+    padding-right: 100px; /* 마이페이지 버튼과 겹치지 않도록 여백을 추가 */
+}
+
+label {
+    margin-right: 10px;
+}
+
+select, input[type="text"] {
+    padding: 5px;
+    margin-right: 10px;
+}
+
+
+/* 버튼 스타일 */
+button {
+    padding: 8px 16px;
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #e64a19; /* 마우스 오버 시 색상 */
+}
+
+/* 테이블 행에 마우스 오버 시 배경 색상 변경 */
+table tr:hover {
+    background-color: #fafafa;
+}
+
+/* 제목 스타일 */
+h3 {
+    margin-top: 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* 모바일 반응형 테이블 스타일 */
+@media (max-width: 768px) {
+    table {
+        width: 100%;
+        border: 0;
+    }
+
+    th, td {
+        display: block;
+        text-align: left;
+        width: 100%;
+        padding: 10px 15px;
+    }
+
+    th {
+        background-color: #f4f4f4;
+        font-size: 16px;
+    }
+
+    td {
+        border-top: 1px solid #ddd;
+        font-size: 14px;
+    }
+
+    img {
+        max-width: 100px; /* 모바일에서 이미지 크기 줄이기 */
+    }
+}

@@ -1,0 +1,82 @@
+/* 스타일 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 테이블 스타일 */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+img {
+    max-width: 150px;
+    height: auto;
+}
+
+a {
+    text-decoration: none;
+    color: blue;
+}
+
+/* 마이페이지 버튼 스타일 */
+.mypage-button {
+    position: fixed;
+    top: 20px;  /* 상단 여백을 충분히 설정 */
+    right: 20px;
+    padding: 10px 15px;
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 1000; /* 다른 요소들보다 위에 표시되도록 설정 */
+}
+
+.mypage-button:hover {
+    background-color: #ff5722;
+}
+
+/* 검색 폼 스타일 */
+form {
+    margin-bottom: 20px;
+    padding-right: 100px; /* 마이페이지 버튼과 겹치지 않도록 여백을 추가 */
+}
+
+label {
+    margin-right: 10px;
+}
+
+select, input[type="text"] {
+    padding: 5px;
+    margin-right: 10px;
+}
+
+button {
+    padding: 5px 15px;
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ff5722;
+}
+
+h3 {
+    margin-top: 20px;
+}
