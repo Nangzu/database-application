@@ -3,6 +3,9 @@ package com.example.database.controller;
 import com.example.database.entity.Product;
 import com.example.database.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,17 +14,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 public class SearchController {
-    @Autowired
-    private  SearchService searchService;
 
-//    @Autowired
-//    public SearchController(SearchService searchService) {
-//        this.searchService = searchService;
-//    }
-@GetMapping("/category1")
-public ResponseEntity<List<String>> getCategory1() {
-    return ResponseEntity.ok(searchService.getCategory1());
-}
+    @Autowired
+    private SearchService searchService;
+
+    @GetMapping("/category1")
+    public ResponseEntity<List<String>> getCategory1() {
+        return ResponseEntity.ok(searchService.getCategory1());
+    }
 
     @GetMapping("/category2")
     public ResponseEntity<List<String>> getCategory2(@RequestParam String category1) {
@@ -37,15 +37,18 @@ public ResponseEntity<List<String>> getCategory1() {
     public ResponseEntity<List<String>> getCategory4(@RequestParam String category3) {
         return ResponseEntity.ok(searchService.getCategory4(category3));
     }
+
     /**
-     * 카테고리 및 검색어를 기반으로 제품 검색
+     * 카테고리 및 검색어를 기반으로 페이징된 제품 검색
      *
      * @param category1 1단계 카테고리
      * @param category2 2단계 카테고리
      * @param category3 3단계 카테고리
      * @param category4 4단계 카테고리
      * @param searchQuery 검색어
-     * @return 검색된 제품 목록
+     * @param page 페이지 번호
+     * @param size 페이지 크기
+     * @return 페이징된 검색 결과
      */
     @GetMapping("/search")
     public ResponseEntity<List<Product>> searchProducts(
@@ -53,14 +56,19 @@ public ResponseEntity<List<String>> getCategory1() {
             @RequestParam(required = false) String category2,
             @RequestParam(required = false) String category3,
             @RequestParam(required = false) String category4,
-            @RequestParam(required = false) String searchQuery) {
-        if (searchQuery == null && category1 == null && category2 == null && category3 == null && category4 == null) {
-            // 검색 조건이 없을 경우 모든 상품 반환
-            return ResponseEntity.ok(searchService.getAllProducts());
-        }
-//        List<Product> products = searchService.searchByCategories(category1, category2, category3, category4, searchQuery);
-        return ResponseEntity.ok(searchService.searchProducts(searchQuery, category1, category2, category3, category4));
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        // 총 검색된 상품 수 계산
+//        long totalItems = searchService.countSearchResults(searchQuery, category1, category2, category3, category4);
+//
+//        // 총 페이지 수 계산
+//        int totalPages = (int) Math.ceil((double) totalItems / size);
+
+        List<Product> productList = searchService.searchProducts(
+                searchQuery, category1, category2, category3, category4, page, size);
+
+        return ResponseEntity.ok(productList);
     }
-
-
 }
+

@@ -17,6 +17,7 @@ import java.util.List;
 public class MainController {
 
     private final SearchHistoryService searchHistoryService;
+
     @Autowired
     private SearchService searchService;
 
@@ -26,12 +27,24 @@ public class MainController {
 
     // 메인 페이지
     @GetMapping("/main")
-    public String main(Model model, HttpSession session) {
-        // 검색 조건 없이 전체 상품 조회
+    public String main(Model model, HttpSession session,
+
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        // 로그인 사용자 정보 추가
         User loggedInUser = (User) session.getAttribute("loggedInUser");
-        model.addAttribute("loggedInUser", loggedInUser); // 템플릿에 로그인 사용자 정보 전달
-        List<Product> products = searchService.searchByCategories(null, null, null, null, null);
+        model.addAttribute("loggedInUser", loggedInUser);
+
+        // 페이징된 전체 상품 조회
+        long totalItems = searchService.countSearchResults(null, null, null, null, null); // 전체 상품 개수
+        int totalPages = (int) Math.ceil((double) totalItems / size);
+
+        List<Product> products = searchService.getAllProducts(page, size);
         model.addAttribute("products", products);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalItems", totalItems);
         return "search_results"; // 검색 결과 화면
     }
 
@@ -43,16 +56,28 @@ public class MainController {
             @RequestParam(required = false) String category2,
             @RequestParam(required = false) String category3,
             @RequestParam(required = false) String category4,
-            Model model
-    ) {
-        // 검색 수행
-        List<Product> products = searchService.searchByCategories(category1, category2, category3, category4, searchQuery);
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
+
+        // 페이징된 검색 결과 조회
+        long totalItems = searchService.countSearchResults(searchQuery, category1, category2, category3, category4);
+        System.out.println("Total items: " + totalItems);
+        int totalPages = (int) Math.ceil((double) totalItems / size);
+        System.out.println("Total pages: " + totalPages);
+
+        List<Product> products = searchService.searchProducts(searchQuery, category1, category2, category3, category4, page, size);
 
         // 검색 결과가 없을 경우 메시지 추가
         if (products.isEmpty()) {
             model.addAttribute("message", "검색된 상품이 없습니다.");
         }
+
         model.addAttribute("products", products);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalItems", totalItems);
+
         return "search_results"; // 검색 결과 화면
     }
 }
