@@ -58,6 +58,23 @@
     </tbody>
 </table>
 
+<div>
+    <p>전체 상품: <span th:text="${totalItems}"></span></p>
+    <p>총 페이지 수: <span th:text="${totalPages}"></span></p>
+    <p>현재 페이지: <span th:text="${currentPage + 1}"></span></p> <!-- 1-based index -->
+</div>
+<!--<div>-->
+<!--    <a href="javascript:void(0);" onclick="changePage('prev')">이전</a>-->
+<!--    <a href="javascript:void(0);" onclick="changePage('next')">다음</a>-->
+<!--</div>-->
+<div>
+    <!-- 이전 페이지 링크 -->
+    <a th:href="@{/main/search(page=${currentPage - 1}, size=${size})}" th:if="${currentPage > 0}">이전</a>
+
+    <!-- 다음 페이지 링크 -->
+    <a th:href="@{/main/search(page=${currentPage + 1}, size=${size})}" th:if="${currentPage < totalPages - 1}">다음</a>
+
+</div>
 <!-- 마이페이지 이동 버튼 -->
 <button class="mypage-button" onclick="openMypageModal()">마이페이지</button>
 
@@ -84,6 +101,9 @@
 </div>
 
 <script>
+    let currentPage = /*[[${currentPage}]]*/ 0;  // 기본 페이지
+    let totalPages = /*[[${totalPages}]]*/ 1;   // 총 페이지 수
+
     function openMypageModal() {
         document.getElementById('mypageModal').style.display = 'block';
     }
@@ -91,8 +111,6 @@
     function closeMypageModal() {
         document.getElementById('mypageModal').style.display = 'none';
     }
-</script>
-<script>
     async function loadCategory1() {
         const response = await fetch('/api/products/category1');
         const categories = await response.json();
@@ -140,6 +158,8 @@
 
     async function performSearch() {
         const formData = new FormData(document.getElementById('searchForm'));
+        formData.append('size', 5);
+        formData.append('page', currentPage);
         const searchQueryString = new URLSearchParams(formData).toString();
         const response = await fetch(`/api/products/search?${searchQueryString}`);
         const results = await response.json();
@@ -173,6 +193,15 @@
         `).join('');
 
         loadSearchHistory();
+    }
+
+    function changePage(direction) {
+        if (direction === 'prev' && currentPage > 0) {
+            currentPage--;
+        } else if (direction === 'next' && currentPage < totalPages - 1) {
+            currentPage++;
+        }
+        performSearch(); // 페이지 변경 시 검색 결과 다시 로드
     }
 
     document.addEventListener('DOMContentLoaded', () => {
