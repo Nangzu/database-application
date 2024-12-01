@@ -126,13 +126,12 @@ public class EbayService {
                 product.setLink(itemNode.path("itemWebUrl").asText());
 
                 String currency = itemNode.path("price").path("currency").asText();
+                product.setCurrency(currency);
+                product.setHprice(itemNode.path("price").path("value").asInt()); // 상품 가격
                 BigDecimal price = new BigDecimal(itemNode.path("price").path("value").asText());
 
                 if ("USD".equals(currency)) {
                     price = price.multiply(exchangeRate); // USD -> KRW 변환
-                    product.setCurrency("KRW");
-                } else {
-                    product.setCurrency(currency);
                 }
 
                 product.setLprice(price.intValue());
