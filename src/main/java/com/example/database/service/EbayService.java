@@ -141,6 +141,9 @@ public class EbayService {
                 product.setImage(imageUrl);
 
                 product.setProductId(itemNode.path("seller").path("username").asText());
+                product.setMallName("이베이");
+
+
 
                 JsonNode categoriesNode = itemNode.path("categories");
                 String category1 = categoriesNode.size() > 0 ? categoriesNode.get(0).path("categoryName").asText() : null;

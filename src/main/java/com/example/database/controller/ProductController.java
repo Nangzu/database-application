@@ -1,8 +1,10 @@
 package com.example.database.controller;
 
 import com.example.database.entity.Price;
+import com.example.database.entity.Pricemin;
 import com.example.database.entity.Product;
 import com.example.database.entity.Shop;
+import com.example.database.repository.PriceminRepository;
 import com.example.database.service.ProductService;
 import com.example.database.service.ShopService;
 import org.springframework.stereotype.Controller;
@@ -57,7 +59,6 @@ public class ProductController
                 newPrice.setProduct(product); // 상품과 연결
                 // 현재 시간 설정 (priceUpdateDate 및 time 필드)
                 newPrice.setTime(LocalDateTime.now());
-                newPrice.setPriceUpdateDate(LocalDateTime.now());
 
                 // 가격을 저장
                 productService.savePrice(newPrice); // price 저장 서비스 메서드 호출
@@ -71,6 +72,24 @@ public class ProductController
                 model.addAttribute("price", firstPrice);
                 Shop shop = firstPrice.getShop();
                 model.addAttribute("shop", shop);
+                // 가격 비교: price 테이블의 가격과 lprice가 다를 경우
+                if (!firstPrice.getPrice().equals(product.getLprice())) {
+                    // 기존 가격을 lprice로 변경
+                    firstPrice.setPrice(product.getLprice());
+                    firstPrice.setPriceUpdateDate(LocalDateTime.now());
+
+                    // 기존 가격을 pricemin 테이블에 기록
+                    Pricemin pricemin = new Pricemin();
+                    pricemin.setProKey(product.getId()); // 상품 ID
+                    pricemin.setPriceMin(firstPrice.getPrice()); // 새 가격
+                    pricemin.setPriceMinTime(LocalDateTime.now()); // 가격 업데이트 시간
+
+                    // 가격 변경 정보를 pricemin에 저장
+                    productService.savePricemin(pricemin); // pricemin 저장 서비스 메서드 호출
+
+                    // 가격 업데이트
+                    productService.savePrice(firstPrice); // price 저장 서비스 메서드 호출
+                }
             }
 
             return "detail"; // 상세 페이지로 이동
@@ -79,4 +98,14 @@ public class ProductController
             return "error";
         }
     }
+    @GetMapping("/{productId}/price-history")
+    @ResponseBody
+    public List<Pricemin> getPriceHistory(@PathVariable Long productId) {
+        List<Pricemin> priceHistory = productService.getPriceHistory(productId);
+        System.out.println("Price history: " + priceHistory); // 디버깅 출력
+        return productService.getPriceHistory(productId);
+    }
+
+
+
 }
