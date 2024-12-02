@@ -49,7 +49,7 @@ async function loadPriceHistory(productId) {
                             min: yAxisMin, // 동적으로 설정된 최소값
                         }
                     },
-                    
+
                 }
             });
         }

@@ -1,0 +1,261 @@
+/* 기본 스타일 */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* 헤더 스타일 */
+h1, h2 {
+    color: #ff5722;
+    text-align: center;
+}
+
+/* 컨테이너 스타일 */
+div {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 800px;
+    background-color: #fff;
+
+    border-radius: 8px;
+}
+
+/* 이미지 스타일 */
+img {
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 300px;
+    height: auto;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 텍스트 스타일 */
+p {
+    line-height: 1.6;
+    font-size: 16px;
+    color: #555;
+}
+
+/* 포인트 색상 강조 */
+span {
+    font-weight: bold;
+    color: #ff5722;
+}
+
+/* 버튼 스타일 */
+a {
+    display: inline-block;
+    text-decoration: none;
+    color: #fff;
+    background-color: #ff5722;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+a:hover {
+    background-color: #e64a19;
+}
+
+/* 차트 영역 */
+canvas {
+    display: block;
+    margin: 20px auto;
+}
+
+/* 메시지 영역 */
+#priceHistoryMessage {
+    text-align: center;
+    color: #ff5722;
+    font-weight: bold;
+}
+
+/* 판매처 정보 스타일 */
+p {
+    margin: 10px 0;
+}
+
+p span {
+    color: #ff5722;
+    font-weight: bold;
+}
+
+/* 전체 페이지 반응형 스타일 */
+@media screen and (max-width: 768px) {
+    div {
+        padding: 15px;
+    }
+    h1, h2 {
+        font-size: 22px;
+    }
+    p {
+        font-size: 14px;
+    }
+    a {
+        font-size: 14px;
+    }
+    img {
+        max-width: 100%;
+    }
+}
+/* 고정 버튼 스타일 */
+.fixed-button {
+    position: fixed;
+    top: 20px; /* 화면 위에서 20px 떨어짐 */
+    right: 20px; /* 화면 오른쪽에서 20px 떨어짐 */
+    z-index: 1000; /* 다른 요소 위에 배치 */
+    text-decoration: none;
+    color: #fff;
+    background-color: #ff5722;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.fixed-button:hover {
+    background-color: #e64a19;
+}
+/* Flex 컨테이너 */
+.product-details {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* 좌우 콘텐츠 간의 간격 */
+    max-width: 1200px; /* 전체 컨테이너 크기 제한 */
+    margin: 0 auto; /* 가운데 정렬 */
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 좌측 콘텐츠 스타일 */
+.product-info {
+    flex: 1; /* 좌측 영역 */
+    max-width: 45%; /* 전체의 45% 크기 */
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-info img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.product-info h2 {
+    font-size: 18px;
+    color: #ff5722;
+}
+
+/* 우측 콘텐츠 스타일 */
+.product-analysis {
+    flex: 1; /* 우측 영역 */
+    max-width: 45%; /* 전체의 45% 크기 */
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-analysis canvas {
+    display: block;
+    margin: 20px 0;
+}
+
+.product-analysis p {
+    line-height: 1.6;
+    font-size: 16px;
+    color: #555;
+}
+/* 신뢰도 정보 스타일 */
+.trust-info {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* 신뢰도 값과 아이콘 사이 간격 */
+    font-size: 14px; /* 폰트 크기 줄이기 */
+    color: #333;
+    position: relative; /* 툴팁 위치를 기준으로 설정 */
+    margin-bottom: 5px; /* 아래쪽 여백 줄이기 */
+}
+
+/* 신뢰도 값 */
+.trust-value {
+    font-weight: bold;
+    color: #ff5722;
+    margin-right: 5px; /* 신뢰도 값과 아이콘 사이 여백 */
+}
+
+
+/* 툴팁 컨테이너 */
+.tooltip {
+    display: flex;
+    justify-content: flex-start;
+    position: relative;
+    font-size: 12px;
+    width : 50%;
+    padding : 0;
+    margin :0;
+}
+
+/* 아이콘 스타일 */
+.tooltip-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #ff5722;
+    color: #fff;
+    text-align: center;
+    line-height: 20px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 0; /* 여백 제거 */
+    flex-shrink: 0; /* 아이콘 크기를 고정 */
+}
+
+/* 툴팁 텍스트 */
+.tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 100%; /* 아이콘 위로 툴팁 표시 */
+    left: 0; /* 툴팁을 왼쪽에 맞춤 */
+    background-color: #333;
+    color: #fff;
+    text-align: left; /* 텍스트를 왼쪽 정렬 */
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 11px;
+    line-height: 1.4;
+    z-index: 10;
+    width: 180px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* 툴팁 화살표 */
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* 툴팁 아래쪽 */
+    left: 10%; /* 화살표를 텍스트 시작점에 맞춤 */
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+/* 마우스 호버 시 툴팁 표시 */
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
