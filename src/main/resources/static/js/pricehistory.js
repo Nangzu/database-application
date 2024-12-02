@@ -6,16 +6,25 @@ async function loadPriceHistory(productId) {
         const messageArea = document.getElementById('priceHistoryMessage');
         const canvas = document.getElementById('priceHistoryChart');
 
-        if (priceHistory.length === 0) {
+        if (priceHistory.length < 2) {
             messageArea.textContent = "최저가 변화가 없는 제품입니다.";
             canvas.style.display = 'none'; // 차트 숨기기
         } else {
             messageArea.textContent ="";
             canvas.style.display = 'block'; // 차트만 보이게 하기
 
+            // 날짜를 기준으로 오름차순 정렬
+            priceHistory.sort((a, b) => new Date(a.priceMinTime) - new Date(b.priceMinTime));
+            const recentPriceHistory = priceHistory.slice(-5);
+
             const ctx = document.getElementById('priceHistoryChart').getContext('2d');
-            const labels = priceHistory.map(record => new Date(record.priceMinTime).toLocaleDateString()); // X축 (날짜)
-            const prices = priceHistory.map(record => record.priceMin); // Y축 (가격)
+            const labels = recentPriceHistory.map(record => new Date(record.priceMinTime).toLocaleDateString()); // X축 (날짜)
+            const prices = recentPriceHistory.map(record => record.priceMin); // Y축 (가격)
+
+
+            // 가장 낮은 가격의 약간 아래를 Y축 최소값으로 설정
+            const minPrice = Math.min(...prices);
+            const yAxisMin = Math.max(0, minPrice - 1000); // 최소 0 이상, 최저가보다 10 낮게 설정
 
             // 가격 변화를 선 그래프 형태로 그리기
             new Chart(ctx, {
@@ -37,8 +46,10 @@ async function loadPriceHistory(productId) {
                         x: {},
                         y: {
                             beginAtZero: true, // Y축 시작점을 0으로 설정
+                            min: yAxisMin, // 동적으로 설정된 최소값
                         }
-                    }
+                    },
+                    
                 }
             });
         }
