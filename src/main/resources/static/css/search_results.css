@@ -80,3 +80,54 @@ button:hover {
 h3 {
     margin-top: 20px;
 }
+
+/* 페이지네이션 전체 스타일 */
+.pagination {
+    display: flex; /* flexbox로 가로 배치 */
+    justify-content: center; /* 가운데 정렬 */
+    list-style-type: none; /* 기본적인 리스트 스타일 제거 */
+    padding: 0; /* 여백 제거 */
+}
+
+/* 각 페이지 항목 스타일 */
+.pagination .page-item {
+    margin-right: 10px; /* 페이지 항목 간의 간격 */
+}
+
+/* 페이지 링크 스타일 */
+.pagination .page-link {
+    display: inline-block; /* 블록 요소로 처리 */
+    padding: 10px 15px; /* 텍스트 여백 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    text-decoration: none; /* 링크 기본 스타일 제거 */
+    border: 1px solid #ccc; /* 테두리 추가 */
+    border-radius: 5px; /* 둥근 테두리 */
+}
+
+/* 활성화된 페이지 스타일 */
+.pagination .active .page-link {
+    background-color: #007bff; /* 활성 페이지 배경 색상 */
+    color: white; /* 텍스트 색상 */
+}
+
+/* 비활성화된 페이지 버튼 스타일 */
+.pagination .disabled .page-link {
+    color: gray; /* 비활성화된 버튼 텍스트 색상 */
+    pointer-events: none; /* 클릭 불가 */
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.history-item .token {
+    width: 10px;
+    height: 10px;
+    background-color: #007bff;
+    border-radius: 50%;
+}

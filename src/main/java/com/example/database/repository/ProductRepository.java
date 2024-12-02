@@ -14,23 +14,23 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    // Category1 페이징
+
     @Query("SELECT DISTINCT p.category1 FROM Product p WHERE p.category1 IS NOT NULL")
     List<String> findDistinctCategory1();
 
-    // Category2 페이징
+
     @Query("SELECT DISTINCT p.category2 FROM Product p WHERE p.category1 = :category1 AND p.category2 IS NOT NULL")
     List<String> findDistinctCategory2ByCategory1(@Param("category1") String category1);
 
-    // Category3 페이징
+
     @Query("SELECT DISTINCT p.category3 FROM Product p WHERE p.category2 = :category2 AND p.category3 IS NOT NULL")
     List<String> findDistinctCategory3ByCategory2(@Param("category2") String category2);
 
-    // Category4 페이징
+
     @Query("SELECT DISTINCT p.category4 FROM Product p WHERE p.category3 = :category3 AND p.category4 IS NOT NULL")
     List<String> findDistinctCategory4ByCategory3(@Param("category3") String category3);
 
-    // 검색 및 페이징 처리
+
     @Query(value = """
     SELECT * FROM (
         SELECT p.*, ROWNUM AS rn FROM product p
