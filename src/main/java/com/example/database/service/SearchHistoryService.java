@@ -18,6 +18,10 @@ public class SearchHistoryService {
     }
 
     public void saveSearchHistory(SearchHistory searchHistory) {
+        if (searchHistory.getUserId() == null) {
+            // 로그인하지 않은 사용자일 경우 기록을 저장하지 않음
+            return;
+        }
         // 중복 확인 로직 추가
         boolean exists = searchHistoryRepository.existsByUserIdAndHistory(
                 searchHistory.getUserId(), searchHistory.getHistory()

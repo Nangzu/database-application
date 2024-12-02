@@ -147,13 +147,11 @@
         // 검색어를 서버로 전송하여 기록을 저장하도록 함
         const searchQuery = formData.get('searchQuery');  // 검색어 가져오기
         if (searchQuery) {
-            const historyResponse = await fetch('/api/search-history', {
+            await fetch('/api/search-history', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ history: searchQuery })
             });
-            const message = await historyResponse.text();
-            alert(message);
         }
 
         const resultsBody = document.getElementById('resultsBody');

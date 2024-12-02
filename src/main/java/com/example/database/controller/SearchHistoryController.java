@@ -40,11 +40,11 @@ public class SearchHistoryController {
     public ResponseEntity<String> addSearchHistory(@RequestBody SearchHistory searchHistory, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+            return ResponseEntity.ok().build(); // 비로그인 상태에서는 아무 작업도 하지 않음
         }
         searchHistory.setUserId(loggedInUser.getId());
         searchHistoryService.saveSearchHistory(searchHistory);
-        return ResponseEntity.ok("검색 기록이 저장되었습니다.");
+        return ResponseEntity.ok().build(); // 성공 상태만 반환
     }
 
 }
