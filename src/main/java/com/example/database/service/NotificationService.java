@@ -7,7 +7,6 @@ import com.example.database.entity.Wishlist;
 import com.example.database.repository.AlarmRepository;
 import com.example.database.repository.WishlistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
