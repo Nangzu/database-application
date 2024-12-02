@@ -32,22 +32,57 @@ a {
     color: blue;
 }
 
-/* 마이페이지 버튼 스타일 */
-.mypage-button {
+/* 고정된 헤더 섹션 */
+.header-fixed {
     position: fixed;
-    top: 20px;  /* 상단 여백을 충분히 설정 */
-    right: 20px;
-    padding: 10px 15px;
-    background-color: #ff5722;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
+    top: 20px;  /* 화면 상단에서 20px 떨어짐 */
+    right: 20px; /* 화면 오른쪽에서 20px 떨어짐 */
+    display: flex;
+    align-items: center; /* 수직 가운데 정렬 */
+    gap: 15px;  /* 요소 간의 간격 */
     z-index: 1000; /* 다른 요소들보다 위에 표시되도록 설정 */
 }
 
+
+/* 마이페이지 버튼 스타일 */
+.mypage-button {
+    background-color: #ff5722; /* 마이페이지 버튼 배경색 */
+    color: #fff; /* 버튼 텍스트 색상 */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 .mypage-button:hover {
-    background-color: #ff5722;
+    background-color: #e64a19; /* 마우스를 올렸을 때 버튼 색상 */
+}
+.login-button, .user-button {
+    background-color: #ff5722; /* 버튼 배경색 */
+    color: #fff; /* 텍스트 색상 */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.login-button:hover, .user-button:hover {
+    background-color: #e64a19; /* 마우스를 올렸을 때 버튼 색상 */
+}
+
+/* 로그인 정보 스타일 */
+.login-info {
+    font-size: 14px;
+    color: #000; /* 로그인 정보 텍스트 색상 */
+}
+
+.login-link {
+    text-decoration: none;
+    color: #ff5722; /* 로그인 링크 색상 */
+}
+
+.login-link:hover {
+    text-decoration: underline; /* 마우스를 올렸을 때 밑줄 표시 */
 }
 
 /* 검색 폼 스타일 */
@@ -74,7 +109,7 @@ button {
 }
 
 button:hover {
-    background-color: #ff5722;
+    background-color: #e64a19;
 }
 
 h3 {
@@ -116,6 +151,7 @@ h3 {
     pointer-events: none; /* 클릭 불가 */
 }
 
+/* 검색 기록 항목 스타일 */
 .history-item {
     display: flex;
     align-items: center;
@@ -125,6 +161,8 @@ h3 {
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
+
+/* 검색 기록 토큰 스타일 */
 .history-item .token {
     width: 10px;
     height: 10px;

@@ -87,36 +87,25 @@
     </ul>
 </nav>
 
-<!--<div>-->
-<!--    <p>전체 상품: <span th:text="${totalItems}"></span></p>-->
-<!--    <p>총 페이지 수: <span th:text="${totalPages}"></span></p>-->
-<!--    <p>현재 페이지: <span th:text="${currentPage + 1}"></span></p> &lt;!&ndash; 1-based index &ndash;&gt;-->
-<!--</div>-->
 
 <!-- 마이페이지 이동 버튼 -->
-<button class="mypage-button" onclick="openMypageModal()">마이페이지</button>
-
-<!-- 모달 창 (마이페이지) -->
-<div id="mypageModal" class="mypage-modal">
-    <div class="mypage-modal-content">
-        <span class="close-btn" onclick="closeMypageModal()">&times;</span>
-        <h2>마이페이지</h2>
-
-        <div class="user-info">
-            <p th:if="${loggedInUser != null}">이름: <span th:text="${loggedInUser.username}"></span></p>
-            <p th:if="${loggedInUser != null}">이메일: <span th:text="${loggedInUser.email}"></span></p>
-            <p th:if="${loggedInUser == null}">로그인유저 Null</p>
-        </div>
-
-        <a href="/users/wishlist"><button class="mypage-btn">위시리스트 보기</button></a>
-        <form action="/users/update-alarm-config" method="post" class="alarm-form">
-            <label>
-                <input type="checkbox" name="enableAlarm" value="true"> 알림 받기
-            </label>
-            <button type="submit" class="mypage-btn">저장</button>
-        </form>
+<div class="header-fixed">
+    <div class="button-section">
+        <a href="/users/mypage">
+            <button class="mypage-button">마이페이지</button>
+        </a>
+        <span th:if="${loggedInUser == null}" class="login-info">
+            <a href="/users/login" class="login-link">로그인</a>
+        </span>
     </div>
+    <span th:if="${loggedInUser != null}" class="user-info">
+        안녕하세요, <span th:text="${loggedInUser.username}"></span>님
+    </span>
 </div>
+
+
+
+
 
 <script>
     let currentPage = 0;  // 기본 페이지
