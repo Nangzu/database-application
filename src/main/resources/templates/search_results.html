@@ -91,18 +91,27 @@
 <!-- 마이페이지 이동 버튼 -->
 <div class="header-fixed">
     <div class="button-section">
-        <a href="/users/mypage">
-            <button class="mypage-button">마이페이지</button>
-        </a>
-        <span th:if="${loggedInUser == null}" class="login-info">
-            <a href="/users/login" class="login-link">로그인</a>
+        <span th:if="${loggedInUser != null}">
+            <a href="/users/mypage">
+                <button class="mypage-button">마이페이지</button>
+            </a>
+            <a href="/users/logout">
+                <button class="logout-button">로그아웃</button>
+            </a>
+        </span>
+        <span th:if="${loggedInUser == null}">
+            <a href="/users/login">
+                <button class="login-button">로그인</button>
+            </a>
+            <a href="/users/register">
+                <button class="register-button">회원가입</button>
+            </a>
         </span>
     </div>
     <span th:if="${loggedInUser != null}" class="user-info">
         안녕하세요, <span th:text="${loggedInUser.username}"></span>님
     </span>
 </div>
-
 
 
 
