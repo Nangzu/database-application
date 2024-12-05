@@ -181,7 +181,7 @@
 
         const searchHistoryArea = document.getElementById('searchHistoryArea');
         searchHistoryArea.innerHTML = ''; // 이전 기록을 지움
-        history.forEach(item => {
+        history.slice(0,5).forEach(item => {
             const historyItem = document.createElement('div');
             historyItem.classList.add('history-item');
             historyItem.textContent = item.history;
